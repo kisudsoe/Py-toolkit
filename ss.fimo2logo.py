@@ -1,4 +1,5 @@
 # 2016-05-20 FRI
+# v1.1  - 160520, add function: save fimo result filtered by qv_thr as a tsv format
 # v1.0  - 160519, create meme file from fimo result 
 ## Yeast project: Make logo from FIMO result (4689 genes) to ceqlogo format
 import os.path

@@ -1,5 +1,5 @@
 # 2016-05-21 SAT
-## v1.3  - 160521, support multiple file & merge output
+## v1.3  - 160521, support multiple file & merge output. (Bugfix needed) DBs must have different pattern names.
 ## v1.2  - 160520b, add function: multiple list support 
 ## v1.1  - 160520a, add function: save fimo result filtered by qv_thr as a tsv format
 ## v1.0  - 160519, create meme file from fimo result 
@@ -12,9 +12,9 @@ def fimo2logo(dir_PATH,file_li,out_dir,qv_thr=0.05,debug=False):
     fimo_rows = []
     fimo_coln = []
     print('1. Read file')
-    for name in file_li:
+    for name in tqdm(file_li):
         file_NAME = '\\'+name
-        print('  ',file_NAME)
+        if debug==True: print('  ',file_NAME)
         
         PATH = dir_PATH+file_NAME
         fimo_f = open(PATH,'r')
@@ -24,7 +24,7 @@ def fimo2logo(dir_PATH,file_li,out_dir,qv_thr=0.05,debug=False):
         for i in range(0,len(fimo_fc)):
             if i==0: fimo_coln = fimo_fc[i].split('\t')
             else: fimo_rows.append(fimo_fc[i].split('\t')) # split by tab
-        print('    -> columns= %d, rows= %d\n' % (len(fimo_rows[1]),len(fimo_rows)))
+    print('  -> data collection: columns= %d, rows= %d\n' % (len(fimo_rows[1]),len(fimo_rows)))
     
     # 2. Filter data by qv_thr value from read FIMO file
     fimo_5 = [row for row in fimo_rows if float(row[7]) <qv_thr] # filter action
@@ -40,7 +40,7 @@ def fimo2logo(dir_PATH,file_li,out_dir,qv_thr=0.05,debug=False):
     NAME = 'fimo_merge_qv_thr_'+str(qv_thr)+'.tsv'
     with open(dir_PATH+'\\'+out_dir+'\\'+NAME,'w') as f:
         f.write(fimo_5_out)
-        print('2-1. file written done: %s.tsv' % NAME)
+        print('  -> file written done: %s\n' % NAME)
     
     # 3. Make pattern list
     pttn = [row[0] for row in fimo_5] # extract column 0
@@ -74,19 +74,20 @@ def fimo2logo(dir_PATH,file_li,out_dir,qv_thr=0.05,debug=False):
         meme.append(lpmatrix)
         meme.append(pttn_mat)
     meme = ''.join(meme)
+    print('  -> meme format generation done.')
     
-    # 4. Generate '.meme' file
+    # 3-2. Generate '.meme' file
     #NAME = file_NAME.split('\\')[2].split('.')[0]+'.meme'
     NAME = 'fimo_merge_qv_thr_'+str(qv_thr)+'.meme'
     with open(dir_PATH+'\\'+out_dir+'\\'+NAME,'w') as f:
         f.write(meme)
-        print('4. file written done: %s.meme\n' % NAME)
+        print('  -> file written done: %s\n' % NAME)
     
     return()
-
+    
 # %%
 ## Make Logo from FIMO_tukey result for ceqlogo format
-## Using fimo2logo - v1.2 160520
+## Using fimo2logo - v1.3 160521
 dir_path = 'D:\\KimSS-NAS\\LFG\\Works\\2016.04 Yeast HD LD Rho0\\(Archive) FIMO analysis'
 file_li = ['160520_intergenic_deg_aab191\\fimo_yeastr.txt',
            '160520_intergenic_deg_aab191\\fimo_jasp.txt',

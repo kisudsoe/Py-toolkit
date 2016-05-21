@@ -1,11 +1,12 @@
 # 2016-05-20 FRI
-# v1.1  - 160520, add function: save fimo result filtered by qv_thr as a tsv format
+# v1.2  - 160520b, add function: multiple list support 
+# v1.1  - 160520a, add function: save fimo result filtered by qv_thr as a tsv format
 # v1.0  - 160519, create meme file from fimo result 
 ## Yeast project: Make logo from FIMO result (4689 genes) to ceqlogo format
 import os.path
 from tqdm import *
-def fimo2logo(file_NAME,out_dir,qv_thr=0.05,debug=False):
-    dir_PATH = 'D:\\KimSS-NAS\\LFG\\Works\\2016.04 Yeast HD LD Rho0\\(Archive) FIMO analysis'
+def fimo2meme(dir_PATH,file_NAME,out_dir,qv_thr=0.05,debug=False):
+    #dir_PATH = 'D:\\KimSS-NAS\\LFG\\Works\\2016.04 Yeast HD LD Rho0\\(Archive) FIMO analysis'
     PATH = dir_PATH+file_NAME
     
     # 1. Read file & Split read data for array
@@ -16,7 +17,7 @@ def fimo2logo(file_NAME,out_dir,qv_thr=0.05,debug=False):
     fimo_rows = []
     for row in fimo_fc:
         fimo_rows.append(row.split('\t')) # split by tab
-    print('1. scanned fimo file -> columns= %d, rows= %d' % (len(fimo_rows[1]),len(fimo_rows)))
+    print('\n1. scanned fimo file -> columns= %d, rows= %d' % (len(fimo_rows[1]),len(fimo_rows)))
     
     # 2. Filter data by qv_thr value from read FIMO file
     fimo_5 = [row for row in fimo_rows[1:] if float(row[7]) <qv_thr] # filter action
@@ -31,9 +32,9 @@ def fimo2logo(file_NAME,out_dir,qv_thr=0.05,debug=False):
         fimo_5_row = '\t'.join(row)
         fimo_5_out.append(fimo_5_row)
     fimo_5_out = ''.join(fimo_5_out)
-    with open(dir_PATH+'\\'+out_dir+'\\'+NAME,'w') as f:
-        f.write(fimo_5_out)
-        print('2-1. file written done: %s.tsv' % NAME)
+    #with open(dir_PATH+'\\'+out_dir+'\\'+NAME,'w') as f:
+    #    f.write(fimo_5_out)
+    #    print('2-1. file written done: %s.tsv' % NAME)
     
     # 3. Make pattern list
     pttn = [row[0] for row in fimo_5] # extract column 0
@@ -72,12 +73,43 @@ def fimo2logo(file_NAME,out_dir,qv_thr=0.05,debug=False):
     NAME = file_NAME.split('\\')[2].split('.')[0]
     with open(dir_PATH+'\\'+out_dir+'\\'+NAME+'.meme','w') as f:
         f.write(meme)
-        print('4. file written done: %s.meme' % NAME)
+        print('4. file written done: %s.meme\n' % NAME)
+    
+    return(fimo_5_out)
+
+# 
+def fimo2logo(dir_PATH,indir,file_li,out_dir,qv_thr=0.05,debug=False):
+    fimo_merge = []
+    for name in file_li:
+        file_NAME = '\\'+indir+'\\'+name
+        print(file_NAME)
+        fimo_merge.append(fimo2meme(dir_PATH,file_NAME,out_dir,qv_thr,debug))
+    merge = ''.join(fimo_merge)
+    NAME = 'fimo_merge_qv_thr_'+str(qv_thr)+'.tsv'
+    with open(dir_PATH+'\\'+out_dir+'\\'+NAME,'w') as f:
+        f.write(merge)
+        print('file written done: %s.tsv\n\n' % NAME)
     
     return()
 
 # %%
-fimo2logo('\\160518_intergenic_4689_YEASTRCT\\fimo_4689_yeastract.tsv','160519_intergenic_4689_qv_5_fimo2logo',qv_thr=0.05)
-fimo2logo('\\160518_intergenic_4689_Jaspar\\fimo_4689_jaspar.tsv','160519_intergenic_4689_qv_5_fimo2logo',qv_thr=0.05)
-fimo2logo('\\160518_intergenic_4689_SwissRegulon\\fimo_4689_swiss.tsv','160519_intergenic_4689_qv_5_fimo2logo',qv_thr=0.05)
-fimo2logo('\\160518_intergenic_4689_UniPROBE\\fimo_4689_uniprobe.tsv','160519_intergenic_4689_qv_5_fimo2logo',qv_thr=0.05)
+## Make Logo from FIMO_tukey result for ceqlogo format
+## Using fimo2logo - v1.2 160520
+dir_path = 'D:\\KimSS-NAS\\LFG\\Works\\2016.04 Yeast HD LD Rho0\\(Archive) FIMO analysis'
+indir = '160520_intergenic_deg_aab191'
+file_li = ['fimo_yeastr.txt','fimo_jasp.txt','fimo_swiss.txt','fimo_unip.txt']
+outdir = indir+'_qv_5_logo'
+qv_thr = 0.05
+fimo2logo(dir_path,indir,file_li,outdir,qv_thr)
+
+indir = '160520_intergenic_deg_aba233'
+outdir = indir+'_qv_5_logo'
+fimo2logo(dir_path,indir,file_li,outdir,qv_thr)
+
+indir = '160520_intergenic_deg_abb66'
+outdir = indir+'_qv_5_logo'
+fimo2logo(dir_path,indir,file_li,outdir,qv_thr)
+
+indir = '160520_intergenic_deg_abc1027'
+outdir = indir+'_qv_5_logo'
+fimo2logo(dir_path,indir,file_li,outdir,qv_thr)

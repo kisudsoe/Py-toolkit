@@ -1,12 +1,16 @@
-# %%
-# 2016-02-03 WED
-# Re-collect 1 kb (promoter) and 10 kb (centered on TSS) sequences
-## Get Entrez Gene ID - Edit 160627 ver
+# 
+# Get Entrez Gene ID
+## v1.0 160203 First version
+## v1.1 160627 Second edition
+## v1.2 160704 Third, Add yeast id search format
 from Bio import Entrez # just one-time
-def getid(item, debug=False):
+def getid(item,taxon,debug=False):
     Entrez.email="kisudsoe@gmail.com"
     sepbar = '-'*30
-    animal = 'Mus musculus'
+    if taxon=='M': animal = 'Mus musculus'
+    elif taxon=='Y': animal = 'Saccharomyces cerevisiae'
+    else: 
+        print('Please input taxon (M, mouse/Y, yeast).')
     
     if(item=='---'):
         if(debug==True): print('No gene name here to search.')
@@ -41,24 +45,28 @@ def getid(item, debug=False):
         ginfo_spl = ginfo.split("\n")
         #print(ginfo_spl)
         for i in range(1,len(ginfo_spl)):
-            id_ann = ginfo_spl[i].find('Official Symbol:')
+            ## Search symbol deposit
+            if taxon=='M': id_ann = ginfo_spl[i].find('Official Symbol:')
+            elif taxon=='Y': id_ann = ginfo_spl[i].find('1. ')
+
             if(id_ann>=0):
-                ginfo_sym = ginfo_spl[i].split(" ")[2]
+                if taxon=='M': ginfo_sym = ginfo_spl[i].split(" ")[2]
+                elif taxon=='Y': ginfo_sym = ginfo_spl[i].split(" ")[1]
                 break
             elif(i==len(ginfo_spl)-1 and id_ann==-1):
                 ginfo_sym = 'NA'
                 if(debug==True): print('='*10+' ERROR '+'='*10+'\n No Symbol in this gene.')
                 return([item,item_id,'---'])
-        #print(ginfo_sym)
+        if(debug==True): print(ginfo_sym)
     return([item,item_id,ginfo_sym])
 
 ## Get Entrez Gene ID using 'getid' function
 import timeit
 from tqdm import *
-def getidList(data,debug=False):
+def getidList(data,taxon,debug=False):
     out = []
     for i in tqdm(range(0,len(data))):
-        tmp = getid(data[i])
+        tmp = getid(data[i],taxon)
         out.append(tmp)
         if debug==True: print(i)
     return(out)
@@ -135,7 +143,6 @@ def getSeq(item_id, debug=False):
         return([item_id,seq_fa])
 
 # Collect sequences from Entrez ID list
-import timeit
 def getSeqList(data):
     start = timeit.default_timer()
     for i in range(0,len(data)):
@@ -161,4 +168,5 @@ def getSeqList(data):
     print('Process takes %d:%02d:%02d\n' % (h,m,s))
     return(out)
 
-genes_id = getidList(genes) # using 160627 ver
+# %% Execute function
+genes_id = getidList(genes) # using 160704 ver

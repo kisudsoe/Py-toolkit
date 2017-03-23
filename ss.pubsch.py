@@ -35,7 +35,7 @@ def getjcr(where,debug=False):
         print('Please input where you are (home/tab/work)')
         return()
     dir = pre+'LFG_etc\\Works_Personal\\Project_Informatics tools\\SSSearch'
-    dbname = "JCR2014.csv"
+    dbname = "JCR2015.csv"
     PATH = dir+'\\'+dbname
     db_f = open(PATH,'r')
     db_fc = db_f.readlines()
@@ -71,7 +71,7 @@ def getabs(ids,db_list,debug=False):
     records = list(record) # to save the record
     handle.close()
     print("\n\nSearch result has %d abstract(s)."%len(records))
-    print(">> Pubmed request : %.1f seconds." % (time.time()-start_time))
+    print(">> Pubmed request : %.1f seconds.\n" % (time.time()-start_time))
     
     # 2. Make output text
     sep = "\n"
@@ -204,7 +204,7 @@ def pubsch(term,db_fc,retmax=100):
         ids = getids(term,retmax)
     else: print('Please input search term')
     
-    if len(ids)>50:
+    if len(ids)>100:
         print('Do you want to search abstracts? (y/n)')
         sch = input(prompt)
     elif len(ids)==0: 
@@ -232,6 +232,7 @@ def filt_if(abstract,ifac=10):
         im_fac = item.split('\t')[0]
         if im_fac=='---': im_fac = 0
         elif im_fac=='-': im_fac = 0 # bugfix 160223
+        elif im_fac=='Not Available': im_fac = 0 # bugfix 160806
         
         if float(im_fac)>=float(ifac): ifac_li.append(i) # filter
         i += 1
@@ -288,18 +289,20 @@ def refui(ref):
 #if __name__ == "__main__":
 #   refui()
 
-# %%
-db_jcr = getjcr('home')
-a = "microarray analysis genome " # TGF-beta, smad3, wnt, beta-catenin
-abst = pubsch(a,db_jcr,1000) # work/home/tab
+# Initiate functions
+db_jcr = getjcr('work') # work/home/tab
+# %% Search papers using terms
+a = 'muscle aging transcriptome '
+abst = pubsch(a,db_jcr,1000)
 abst_if15 = filt_if(abst,15)
 abst_yr14 = filt_yr(abst,2014)
 abst_yr14_if15 = filt_if(abst_yr14,15)
-# %%
-a2 = "22258509"
-ref = pubsch("work",a2) # (work/home/tab, term/pmid)
+# %% Get abstract using PMID
+a2 = "28132174"
+#ref = pubsch("work",a2) # (work/home/tab, term/pmid)
+ref = getabs(a2,db_jcr)
 #openurl(a2)
 refui(ref)
-# %%
-ref = getref("long","18347592") # (long/short/doku, term/pmid)
+# %% Reference information
+ref = getref("long","12970376") # (long/short/doku, term/pmid)
 refui(ref)

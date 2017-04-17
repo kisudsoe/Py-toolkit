@@ -210,4 +210,4 @@ genes = listIn()
 genes_id = getidList(genes,"M") # using 160704 ver
 
 # %% Save as csv file
-savecsv(genes_id,name='/161129_genes_ids.csv')
+savecsv(genes_id,name='/170417_genes_ids.csv')

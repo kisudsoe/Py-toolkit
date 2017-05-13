@@ -7,7 +7,7 @@ def getid(item, debug=False):
     Entrez.email="kisudsoe@gmail.com"
     sepbar = '-'*30
     animal = 'Mus musculus'
-    
+
     if(item=='---'):
         if(debug==True): print('No gene name here to search.')
         return(['---','---','---'])
@@ -25,7 +25,7 @@ def getid(item, debug=False):
         else:
             item_id = ids[0]
         if(debug==True): print('Search id for %s is %s' % (search_string,item_id))
-        
+
         # Valid id with info - added for 160627 ver
         # Get gene information of entrez id
         handle = Entrez.efetch(db="gene",
@@ -62,7 +62,7 @@ def getidList(data,debug=False):
         out.append(tmp)
         if debug==True: print(i)
     return(out)
-    
+
 ## Collect 1 kb resion centered on TSS
 from Bio import Entrez
 from Bio import SeqIO
@@ -72,7 +72,7 @@ def getSeq(item_id, debug=False):
     #item = 'Fndc1'
     animal = 'Mus musculus'
     #search_string = item+"[Gene] AND "+animal+"[Organim] AND mRNA[Filter] AND RefSeq[Filter]"
-    
+
     if(item_id=='---'):
         #print('No gene name here to search.')
         return([item_id,'---'])
@@ -98,18 +98,18 @@ def getSeq(item_id, debug=False):
                 ginfo_ann = 'NA'
                 if(debug==True): print('='*10+' ERROR '+'='*10+'\n No annotation in this gene.')
                 return([item_id,'---'])
-        
+
     if(item_id!='---' and ginfo_ann!='NA'):
         if len(ginfo_ann)>4:
             ginfo_ann_strand = ginfo_ann[4].split(")")[0]
         else:
             ginfo_ann_strand = 'null'
-    
+
         if ginfo_ann_strand=='complement':
             strand = 2
         else:
             strand = 1
-        ginfo_ann_id = 'NC'+ginfo_ann[2].split("NC")[1]    
+        ginfo_ann_id = 'NC'+ginfo_ann[2].split("NC")[1]
         ginfo_ann_seqst = int(ginfo_ann[3].split("..")[0].split("(")[1])
         ginfo_ann_seqsp = int(ginfo_ann[3].split("..")[1].split(",")[0].split(")")[0])
 
@@ -147,7 +147,7 @@ def getSeqList(data):
         else:
             tmp = getSeq(data[i])
             out.append(tmp)
-        
+
         if i%30 ==0 : # Print Process
             print('now process= %d %% (%d/%d iteration)'
             % (round(i*100/len(data),2),i,len(data)))

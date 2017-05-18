@@ -300,24 +300,29 @@ def refui(ref):
 # Initiate functions
 db_jcr = getjcr('work') # work/home/tab
 
+'''
+ATOM short-cuts:
+  1. Switching syntax: `ctrl-shift-L`
+  2. Command: `ctrl-shift-P`
+'''
 # %% Search papers using terms
-a = 'mouse liver Kdm5b'
+a = 'review Kdm5b'
 abst = pubsch(a,db_jcr,1000)
 abst_if15 = filt_if(abst,15)
 abst_yr14 = filt_yr(abst,2014)
 abst_yr14_if15 = filt_if(abst_yr14,15)
-
 print('\n***********************\n\n'.join(abst[0:20]))
+
 
 # %% Get abstract using PMID
 a2 = "25909289"
-#ref = pubsch("work",a2) # (work/home/tab, term/pmid)
 ref = getabs(a2,db_jcr)
+#refui(ref)
 print(ref[0])
 openurl(a2)
-#refui(ref)
+
 
 # %% Reference information
-ref = getref("long","25628922") # (long/short/doku, term/pmid)
-print(ref[0])
+ref = getref("long","27974677") # (long/short/doku, term/pmid)
 #refui(ref)
+print(ref[0])

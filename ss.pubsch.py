@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-2016-05-22 SUN v1.1
+2017-05-17 WED v1.1a
 @author: KimSS
 
 v1.0  - 160131, first release

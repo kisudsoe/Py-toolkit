@@ -1,12 +1,22 @@
-# %%
-# 2016-02-03 WED
-# Re-collect 1 kb (promoter) and 10 kb (centered on TSS) sequences
-## Get Entrez Gene ID - Edit 160627 ver
+#
+# Get Entrez Gene ID
+## v1.0 160203 First version
+## v1.1 160627 Second edition
+## v1.2 160704 Add yeast id search format
+## v1.3 161005 Add option for Huamn X-ald project
 from Bio import Entrez # just one-time
-def getid(item, debug=False):
+def getid(item,taxon,debug=False):
     Entrez.email="kisudsoe@gmail.com"
     sepbar = '-'*30
+<<<<<<< HEAD
     animal = 'Mus musculus'
+=======
+    if taxon=='M': animal = 'Mus musculus'
+    elif taxon=='Y': animal = 'Saccharomyces cerevisiae'
+    elif taxon=='H': animal = 'Homo sapiens'
+    else:
+        print('Please input taxon \n\tM, mouse\n\tY, yeast\n\tH, human')
+>>>>>>> 4c53cc8f2b3155edc238f1d794ee69c972d01c6b
 
     if(item=='---'):
         if(debug==True): print('No gene name here to search.')
@@ -41,24 +51,28 @@ def getid(item, debug=False):
         ginfo_spl = ginfo.split("\n")
         #print(ginfo_spl)
         for i in range(1,len(ginfo_spl)):
-            id_ann = ginfo_spl[i].find('Official Symbol:')
+            ## Search symbol deposit
+            if taxon=='M': id_ann = ginfo_spl[i].find('Official Symbol:')
+            elif taxon=='Y': id_ann = ginfo_spl[i].find('1. ')
+
             if(id_ann>=0):
-                ginfo_sym = ginfo_spl[i].split(" ")[2]
+                if taxon=='M': ginfo_sym = ginfo_spl[i].split(" ")[2]
+                elif taxon=='Y': ginfo_sym = ginfo_spl[i].split(" ")[1]
                 break
             elif(i==len(ginfo_spl)-1 and id_ann==-1):
                 ginfo_sym = 'NA'
                 if(debug==True): print('='*10+' ERROR '+'='*10+'\n No Symbol in this gene.')
                 return([item,item_id,'---'])
-        #print(ginfo_sym)
+        if(debug==True): print(ginfo_sym)
     return([item,item_id,ginfo_sym])
 
 ## Get Entrez Gene ID using 'getid' function
 import timeit
 from tqdm import *
-def getidList(data,debug=False):
+def getidList(data,taxon,debug=False):
     out = []
     for i in tqdm(range(0,len(data))):
-        tmp = getid(data[i])
+        tmp = getid(data[i],taxon)
         out.append(tmp)
         if debug==True: print(i)
     return(out)
@@ -66,11 +80,15 @@ def getidList(data,debug=False):
 ## Collect 1 kb resion centered on TSS
 from Bio import Entrez
 from Bio import SeqIO
-def getSeq(item_id, debug=False):
+def getSeq(item_id,taxon,debug=False):
     Entrez.email="kisudsoe@gmail.com"
     sepbar = '-'*30
     #item = 'Fndc1'
-    animal = 'Mus musculus'
+    if taxon=='M': animal = 'Mus musculus'
+    elif taxon=='Y': animal = 'Saccharomyces cerevisiae'
+    elif taxon=='H': animal = 'Homo sapiens'
+    else:
+        print('Please input taxon \n\tM, mouse\n\tY, yeast\n\tH, human')
     #search_string = item+"[Gene] AND "+animal+"[Organim] AND mRNA[Filter] AND RefSeq[Filter]"
 
     if(item_id=='---'):
@@ -109,9 +127,21 @@ def getSeq(item_id, debug=False):
             strand = 2
         else:
             strand = 1
+<<<<<<< HEAD
         ginfo_ann_id = 'NC'+ginfo_ann[2].split("NC")[1]
         ginfo_ann_seqst = int(ginfo_ann[3].split("..")[0].split("(")[1])
         ginfo_ann_seqsp = int(ginfo_ann[3].split("..")[1].split(",")[0].split(")")[0])
+=======
+        #print("\n note:\n"+ginfo_ann[4]+"\n")
+        if taxon=='H': # debug 161005
+            ginfo_ann_id = 'NC'+ginfo_ann[3].split("NC")[1]
+            ginfo_ann_seqst = int(ginfo_ann[4].split("..")[0].split("(")[1])
+            ginfo_ann_seqsp = int(ginfo_ann[4].split("..")[1].split(",")[0].split(")")[0])
+        else :
+            ginfo_ann_id = 'NC'+ginfo_ann[2].split("NC")[1]
+            ginfo_ann_seqst = int(ginfo_ann[3].split("..")[0].split("(")[1])
+            ginfo_ann_seqsp = int(ginfo_ann[3].split("..")[1].split(",")[0].split(")")[0])
+>>>>>>> 4c53cc8f2b3155edc238f1d794ee69c972d01c6b
 
         if(debug==True):
             print('Parsing result'+sepbar+'\nseq_id= %s' % ginfo_ann_id)
@@ -135,17 +165,16 @@ def getSeq(item_id, debug=False):
         return([item_id,seq_fa])
 
 # Collect sequences from Entrez ID list
-import timeit
-def getSeqList(data):
+def getSeqList(data,taxon):
     start = timeit.default_timer()
     for i in range(0,len(data)):
         if i==0:
-            out = getSeq(data[i])
+            out = getSeq(data[i],taxon)
         elif i==1:
-            tmp = getSeq(data[i])
+            tmp = getSeq(data[i],taxon)
             out = [out,tmp]
         else:
-            tmp = getSeq(data[i])
+            tmp = getSeq(data[i],taxon)
             out.append(tmp)
 
         if i%30 ==0 : # Print Process
@@ -160,5 +189,39 @@ def getSeqList(data):
     h,m = divmod(m,60)
     print('Process takes %d:%02d:%02d\n' % (h,m,s))
     return(out)
+    
+# 2016-05-17
+# Save out as csv file
+import csv
+def savecsv(data,name='pyout.csv',dir='C:/Users/KimSS-Work/Desktop',debug=False):
+    #path = 'C:/Users/KimSS/Desktop/Py_output/ # Work PC
+    #path = 'C:/Users/kisud/Desktop/Py_output/ # Home PC
+    path = dir+name
+    print('\n'+path)
+    with open(path,'w',newline='') as f:
+        wr = csv.writer(f)
+        wr.writerows(data)
 
+# %%
+import win32clipboard # just one-time
+def listIn():
+    win32clipboard.OpenClipboard()
+    clipb = win32clipboard.GetClipboardData()
+    win32clipboard.CloseClipboard()
+    
+    data = clipb.split("\r\n")
+    length = len(data)-1
+    print('list length= %d' % length) # read data as string
+    return(data[0:length])
+# %% Get gene list from clipboard
+genes = listIn()
+
+# %% Execute function
+genes_id = getidList(genes,"M") # using 160704 ver
+
+<<<<<<< HEAD
 genes_id = getidList(genes) # using 160627 ver
+=======
+# %% Save as csv file
+savecsv(genes_id,name='/170417_genes_ids.csv')
+>>>>>>> 4c53cc8f2b3155edc238f1d794ee69c972d01c6b

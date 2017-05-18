@@ -3,9 +3,9 @@
 2016-05-22 SUN v1.1
 @author: KimSS
 
-v1.1  - 160522, bug fix and edit structure
 v1.0  - 160131, first release
-v1.0a - 170517, conda install biopython
+v1.1  - 160522, bug fix and edit structure
+v1.1a - 170517, conda install biopython
 """
 
 # %%
@@ -127,7 +127,7 @@ def getabs(ids,db_list,debug=False):
             jcr.append(''.join(jcr_str))
             str_list = [jcr_row[0][3],'\t',DP_li[0],'_',TA,' (',pmid,')',sep]
         str_add=[rec.get("TI"),sep,sep,AU[0],sep,sep,
-                        AB,sep,sep,
+                        '  ',AB,sep,sep,
                         DP_li[0],'_',AU_li[0],'_',TA,'_',pmid,sep,
                         SO,sep,
                         jcr[0]]
@@ -264,6 +264,7 @@ def openurl(pmid):
     webbrowser.open(url,new=2)
 
 # GUI format v0.1
+''' 임시 주석처리 PyQt4 > PyQt5 작업요
 import sys
 from PyQt5.QtWidgets import *
 class RefUI(QMainWindow):
@@ -294,9 +295,11 @@ def refui(ref):
 
 #if __name__ == "__main__":
 #   refui()
+'''
 
 # Initiate functions
 db_jcr = getjcr('work') # work/home/tab
+
 # %% Search papers using terms
 a = 'mouse liver Kdm5b'
 abst = pubsch(a,db_jcr,1000)
@@ -304,15 +307,17 @@ abst_if15 = filt_if(abst,15)
 abst_yr14 = filt_yr(abst,2014)
 abst_yr14_if15 = filt_if(abst_yr14,15)
 
-print('\n***********************\n'.join(abst[0:20]))
+print('\n***********************\n\n'.join(abst[0:20]))
+
 # %% Get abstract using PMID
-a2 = "17264674"
+a2 = "25909289"
 #ref = pubsch("work",a2) # (work/home/tab, term/pmid)
 ref = getabs(a2,db_jcr)
 print(ref[0])
 openurl(a2)
 #refui(ref)
+
 # %% Reference information
-ref = getref("long","22935518") # (long/short/doku, term/pmid)
+ref = getref("long","25628922") # (long/short/doku, term/pmid)
 print(ref[0])
 #refui(ref)

@@ -3,9 +3,9 @@
 2016-05-22 SUN v1.1
 @author: KimSS
 
-v1.0  - 160131, first release
+v1.0  - 160131, first script
 v1.1  - 160522, bug fix and edit structure
-v1.1a - 170517, conda install biopython
+v1.1a - 170517, code optimization for atom hydrogen
 """
 
 # %%
@@ -74,8 +74,8 @@ def getabs(ids,db_list,debug=False):
     record = Medline.parse(handle) # records is an iterator
     records = list(record) # to save the record
     handle.close()
-    print("\n\nSearch result has %d abstract(s)."%len(records))
-    print(">> Pubmed request : %.1f seconds.\n" % (time.time()-start_time))
+    print("Search result has %d abstract(s)."%len(records), end='')
+    print(">> Pubmed request : %.1f seconds." % (time.time()-start_time), end='')
 
     # 2. Make output text
     sep = "\n"
@@ -140,10 +140,10 @@ def getabs(ids,db_list,debug=False):
         if j==n-1: YR1 = DP_li[0]
         j += 1
 
-    if i==0: print("All items were matched from JCR DB!")
-    else: print(">> %d/%d items couldn't match from JCR DB.."%(i,n))
-    print(">> Search result has abstracts ranged from %s to %s."%(YR1,YR0))
-    print("\nProcess done.")
+    if i==0: print("All items were matched from JCR DB!", end='')
+    else: print(">> %d/%d items couldn't match from JCR DB.."%(i,n), end='')
+    print(">> Search result has abstracts ranged from %s to %s."%(YR1,YR0), end='')
+    print("\nProcess done.", end='')
     if debug==True: print(out[0])
     return(out)
 
@@ -160,7 +160,7 @@ def getref(form,term,retmax=20):
     record = Medline.parse(handle) # records is an iterator
     records = list(record) # to save the record
     handle.close()
-    print("Search result has %d reference(s).\n"%len(records))
+    print("Search result has %d reference(s).\n"%len(records), end='')
 
     out = []
     for rec in tqdm(records):
@@ -242,7 +242,7 @@ def filt_if(abstract,ifac=10):
         i += 1
     for item in ifac_li:
         out.append(abstract[int(item)])
-    print('IF filtered item length= %d' %len(out))
+    print('IF filtered item length= %d' %len(out), end='')
     return(out)
 
 def filt_yr(abstract,year=2011):
@@ -255,7 +255,7 @@ def filt_yr(abstract,year=2011):
         i += 1
     for item in yr_li:
         out.append(abstract[int(item)])
-    print('Yr filtered item length= %d' %len(out))
+    print('Yr filtered item length= %d' %len(out), end='')
     return(out)
 
 import webbrowser
@@ -300,22 +300,25 @@ def refui(ref):
 # Initiate functions
 db_jcr = getjcr('work') # work/home/tab
 
+##########################################################
+
 '''
 ATOM short-cuts:
   1. Switching syntax: `ctrl-shift-L`
   2. Command: `ctrl-shift-P`
 '''
 # %% Search papers using terms
-a = 'review Kdm5b'
+a = 'Klhdc7a'
 abst = pubsch(a,db_jcr,1000)
 abst_if15 = filt_if(abst,15)
 abst_yr14 = filt_yr(abst,2014)
 abst_yr14_if15 = filt_if(abst_yr14,15)
-print('\n***********************\n\n'.join(abst[0:20]))
+print('\n'+'*'*25+'\n')
+print('\n*************************\n\n'.join(abst[0:50]))
 
 
 # %% Get abstract using PMID
-a2 = "25909289"
+a2 = "9507200"
 ref = getabs(a2,db_jcr)
 #refui(ref)
 print(ref[0])
@@ -323,6 +326,6 @@ openurl(a2)
 
 
 # %% Reference information
-ref = getref("long","27974677") # (long/short/doku, term/pmid)
+ref = getref("long","9507200") # (long/short/doku, term/pmid)
 #refui(ref)
 print(ref[0])

@@ -21,7 +21,7 @@ def getids(term,retmax=100,debug=False):
     record = Entrez.read(handle)
     #if(debug==True): print(record)
     idlist = record["IdList"]
-    print('Search result has %d PMID(s).' % len(idlist))
+    print('Search result has %d PMID(s).\n' % len(idlist))
     if debug==True:
         print(sepbar)
         print(idlist)
@@ -74,8 +74,8 @@ def getabs(ids,db_list,debug=False):
     record = Medline.parse(handle) # records is an iterator
     records = list(record) # to save the record
     handle.close()
-    print("Search result has %d abstract(s)."%len(records), end='')
-    print(">> Pubmed request : %.1f seconds." % (time.time()-start_time), end='')
+    print("Search result has %d abstract(s).\n"%len(records))
+    print(">> Pubmed request : %.1f seconds.\n" % (time.time()-start_time))
 
     # 2. Make output text
     sep = "\n"
@@ -140,10 +140,10 @@ def getabs(ids,db_list,debug=False):
         if j==n-1: YR1 = DP_li[0]
         j += 1
 
-    if i==0: print("All items were matched from JCR DB!", end='')
-    else: print(">> %d/%d items couldn't match from JCR DB.."%(i,n), end='')
-    print(">> Search result has abstracts ranged from %s to %s."%(YR1,YR0), end='')
-    print("\nProcess done.", end='')
+    if i==0: print("All items were matched from JCR DB!")
+    else: print(">> %d/%d items couldn't match from JCR DB.."%(i,n))
+    print(">> Search result has abstracts ranged from %s to %s."%(YR1,YR0))
+    print("\nProcess done.")
     if debug==True: print(out[0])
     return(out)
 
@@ -151,7 +151,7 @@ def getabs(ids,db_list,debug=False):
 def getref(form,term,retmax=20):
     ids = getids(term,retmax)
     if len(ids)==0:
-        print('Nothing to search. Please retry with other term.')
+        print('Nothing to search. Please retry with other term.\n')
         return()
     Entrez.email="kisudsoe@gmail.com" # always tell NCBI who I am
     handle = Entrez.efetch(db="pubmed", id=ids,
@@ -242,7 +242,7 @@ def filt_if(abstract,ifac=10):
         i += 1
     for item in ifac_li:
         out.append(abstract[int(item)])
-    print('IF filtered item length= %d' %len(out), end='')
+    print('IF filtered item length= %d' %len(out))
     return(out)
 
 def filt_yr(abstract,year=2011):
@@ -255,7 +255,7 @@ def filt_yr(abstract,year=2011):
         i += 1
     for item in yr_li:
         out.append(abstract[int(item)])
-    print('Yr filtered item length= %d' %len(out), end='')
+    print('Yr filtered item length= %d' %len(out))
     return(out)
 
 import webbrowser
@@ -304,11 +304,11 @@ db_jcr = getjcr('work') # work/home/tab
 
 '''
 ATOM short-cuts:
-  1. Switching syntax: `ctrl-shift-L`
+  1. Switching syntax: `ctrl-shift-L` > markdown
   2. Command: `ctrl-shift-P`
 '''
 # %% Search papers using terms
-a = 'Klhdc7a'
+a = 'liver galectin-8'
 abst = pubsch(a,db_jcr,1000)
 abst_if15 = filt_if(abst,15)
 abst_yr14 = filt_yr(abst,2014)
@@ -326,6 +326,6 @@ openurl(a2)
 
 
 # %% Reference information
-ref = getref("long","9507200") # (long/short/doku, term/pmid)
+ref = getref("long","24379606") # (long/short/doku, term/pmid)
 #refui(ref)
 print(ref[0])

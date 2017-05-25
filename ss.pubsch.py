@@ -31,13 +31,14 @@ def getids(term,retmax=100,debug=False):
 import os.path
 def getjcr(where,debug=False):
     #dir = 'D:\\KimSS-NAS\\LFG_etc\\Works_Personal\\Project_Informatics tools\\SSSearch'
-    if where=='work': pre = 'D:\\KimSS-NAS\\'
-    elif where=='home': pre = 'E:\\KSS-Cloud\\'
-    elif where=='tab': pre = 'D:\\KimSS-Cloud\\'
+    #dir = 'D:\Github\SS.Py-toolkit\ss.pubsch'
+    if where=='work': pre = 'D:\\Github\\'
+    elif where=='home': pre = 'D:\\Github\\'
+    elif where=='tab': pre = 'E:\\Github\\'
     else :
         print('Please input where you are (home/tab/work)')
         return()
-    dir = pre+'LFG_etc\\Works_Personal\\Project_Informatics tools\\SSSearch'
+    dir = pre+'SS.Py-toolkit\\ss.pubsch'
     dbname = "JCR2015.csv"
     PATH = dir+'\\'+dbname
     db_f = open(PATH,'r')
@@ -326,6 +327,6 @@ openurl(a2)
 
 
 # %% Reference information
-ref = getref("long","28467781") # (long/short/doku, term/pmid)
+ref = getref("long","24618899") # (long/short/doku, term/pmid)
 #refui(ref)
 print(ref[0])

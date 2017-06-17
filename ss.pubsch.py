@@ -80,10 +80,7 @@ def getabs(ids,db_list,debug=False):
 
     # 2. Make output text
     sep = "\n"
-    out = []
-    n = len(records)
-    i = 0
-    j = 0
+    out=[]; n=len(records); i=0; j=0
     for rec in tqdm(records[0:n]):
         JT = rec.get("JT") # get Journal Name
         if not JT: JT="---" # bugfix 160210
@@ -309,7 +306,7 @@ ATOM short-cuts:
   2. Command: `ctrl-shift-P`
 '''
 # %% Search papers using terms
-a = 'Mapk15'
+a = 'BCH2p'
 abst = pubsch(a,db_jcr,1000)
 print('\n'+'*'*25+'\n')
 print('\n*************************\n\n'.join(abst[0:50]))
@@ -319,7 +316,7 @@ abst_yr14_if15 = filt_if(abst_yr14,15)
 
 
 # %% Get abstract using PMID
-a2 = "9507200"
+a2 = "23092060"
 ref = getabs(a2,db_jcr)
 #refui(ref)
 print(ref[0])
@@ -327,6 +324,6 @@ openurl(a2)
 
 
 # %% Reference information
-ref = getref("long","24618899") # (long/short/doku, term/pmid)
+ref = getref("long","27577013") # (long/short/doku, term/pmid)
 #refui(ref)
 print(ref[0])

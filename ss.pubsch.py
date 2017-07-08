@@ -112,7 +112,7 @@ def getabs(ids,db_list,debug=False):
         jcr_row = [row for row in db_list if row[0]==IS]
         ## 2-2. Concatenate info
         if len(jcr_row)==0:
-            jcr = ['---']
+            jcr = ['[---]']
             IS_str = []
             IS_str.append(''.join(IS_li))
             str_list = [jcr[0],'\t',DP_li[0],'_',TA,' (',pmid,')',sep]
@@ -123,8 +123,8 @@ def getabs(ids,db_list,debug=False):
                        jcr_row[0][2],'), ',jcr_row[0][4],' rank in ',jcr_row[0][5]]
             jcr = []
             jcr.append(''.join(jcr_str))
-            str_list = [jcr_row[0][3],'\t',DP_li[0],'_',TA,' (',pmid,')',sep]
-        str_add=[rec.get("TI"),sep,sep,AU[0],sep,sep,
+            str_list = ['[',jcr_row[0][3],']','\t',DP_li[0],'_',TA,' (',pmid,')',sep]
+        str_add=['## ',rec.get("TI"),sep,sep,AU[0],sep,sep,
                         '  ',AB,sep,sep,
                         DP_li[0],'_',AU_li[0],'_',TA,'_',pmid,sep,
                         SO,sep,
@@ -231,7 +231,7 @@ def filt_if(abstract,ifac=10):
     out = []
     i = 0
     for item in abstract:
-        im_fac = item.split('\t')[0]
+        im_fac = item.split(']\t')[0].split('[')[1]
         if im_fac=='---': im_fac = 0
         elif im_fac=='-': im_fac = 0 # bugfix 160223
         elif im_fac=='Not Available': im_fac = 0 # bugfix 160806
@@ -243,7 +243,7 @@ def filt_if(abstract,ifac=10):
     print('IF filtered item length= %d' %len(out))
     return(out)
 
-def filt_yr(abstract,year=2011):
+def filt_yr(abstract,year=2015):
     yr_li = []
     out = []
     i = 0
@@ -298,25 +298,23 @@ def refui(ref):
 # Initiate functions
 db_jcr = getjcr('work') # work/home/tab
 
-##########################################################
 
-'''
-ATOM short-cuts:
-  1. Switching syntax: `ctrl-shift-L` > markdown
-  2. Command: `ctrl-shift-P`
-'''
+## ATOM short-cuts: #################
+#  1. Switching syntax: `ctrl-shift-L` > markdown
+#  2. Command: `ctrl-shift-P`
+#####################################
 # %% Search papers using terms
-a = 'BCH2p'
+a = 'phenologs'
 abst = pubsch(a,db_jcr,1000)
 print('\n'+'*'*25+'\n')
 print('\n*************************\n\n'.join(abst[0:50]))
 abst_if15 = filt_if(abst,15)
-abst_yr14 = filt_yr(abst,2014)
+abst_yr14 = filt_yr(abst,2015)
 abst_yr14_if15 = filt_if(abst_yr14,15)
 
 
 # %% Get abstract using PMID
-a2 = "23092060"
+a2 = "21529326"
 ref = getabs(a2,db_jcr)
 #refui(ref)
 print(ref[0])
@@ -324,6 +322,6 @@ openurl(a2)
 
 
 # %% Reference information
-ref = getref("long","27577013") # (long/short/doku, term/pmid)
+ref = getref("long","17092546") # (long/short/doku, term/pmid)
 #refui(ref)
 print(ref[0])

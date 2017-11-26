@@ -298,7 +298,7 @@ def refui(ref):
 '''
 
 # Initiate functions
-db_jcr = getjcr('work') # work/home/tab
+db_jcr = getjcr('home') # work/home/tab
 
 '''
 ATOM short-cuts:
@@ -306,7 +306,7 @@ ATOM short-cuts:
   2. Command: `ctrl-shift-P`
 '''
 # %% Search papers using terms
-a = 'review Kdm5b'
+a = 'ape3 yeast'
 abst = pubsch(a,db_jcr,1000)
 abst_if15 = filt_if(abst,15)
 abst_yr14 = filt_yr(abst,2014)

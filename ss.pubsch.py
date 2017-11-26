@@ -3,9 +3,9 @@
 2017-05-17 WED v1.1a
 @author: KimSS
 
-v1.0  - 160131, first release
+v1.0  - 160131, first script
 v1.1  - 160522, bug fix and edit structure
-v1.1a - 170517, conda install biopython
+v1.1a - 170517, code optimization for atom hydrogen
 """
 
 # %%
@@ -21,7 +21,7 @@ def getids(term,retmax=100,debug=False):
     record = Entrez.read(handle)
     #if(debug==True): print(record)
     idlist = record["IdList"]
-    print('Search result has %d PMID(s).' % len(idlist))
+    print('Search result has %d PMID(s).\n' % len(idlist))
     if debug==True:
         print(sepbar)
         print(idlist)
@@ -31,13 +31,14 @@ def getids(term,retmax=100,debug=False):
 import os.path
 def getjcr(where,debug=False):
     #dir = 'D:\\KimSS-NAS\\LFG_etc\\Works_Personal\\Project_Informatics tools\\SSSearch'
-    if where=='work': pre = 'D:\\KimSS-NAS\\'
-    elif where=='home': pre = 'E:\\KSS-Cloud\\'
-    elif where=='tab': pre = 'D:\\KimSS-Cloud\\'
+    #dir = 'D:\Github\SS.Py-toolkit\ss.pubsch'
+    if where=='work': pre = 'D:\\Github\\'
+    elif where=='home': pre = 'D:\\Github\\'
+    elif where=='tab': pre = 'E:\\Github\\'
     else :
         print('Please input where you are (home/tab/work)')
         return()
-    dir = pre+'LFG_etc\\Works_Personal\\Project_Informatics tools\\SSSearch'
+    dir = pre+'SS.Py-toolkit\\ss.pubsch'
     dbname = "JCR2015.csv"
     PATH = dir+'\\'+dbname
     db_f = open(PATH,'r')
@@ -74,15 +75,12 @@ def getabs(ids,db_list,debug=False):
     record = Medline.parse(handle) # records is an iterator
     records = list(record) # to save the record
     handle.close()
-    print("\n\nSearch result has %d abstract(s)."%len(records))
+    print("Search result has %d abstract(s).\n"%len(records))
     print(">> Pubmed request : %.1f seconds.\n" % (time.time()-start_time))
 
     # 2. Make output text
     sep = "\n"
-    out = []
-    n = len(records)
-    i = 0
-    j = 0
+    out=[]; n=len(records); i=0; j=0
     for rec in tqdm(records[0:n]):
         JT = rec.get("JT") # get Journal Name
         if not JT: JT="---" # bugfix 160210
@@ -114,7 +112,7 @@ def getabs(ids,db_list,debug=False):
         jcr_row = [row for row in db_list if row[0]==IS]
         ## 2-2. Concatenate info
         if len(jcr_row)==0:
-            jcr = ['---']
+            jcr = ['[---]']
             IS_str = []
             IS_str.append(''.join(IS_li))
             str_list = [jcr[0],'\t',DP_li[0],'_',TA,' (',pmid,')',sep]
@@ -125,8 +123,8 @@ def getabs(ids,db_list,debug=False):
                        jcr_row[0][2],'), ',jcr_row[0][4],' rank in ',jcr_row[0][5]]
             jcr = []
             jcr.append(''.join(jcr_str))
-            str_list = [jcr_row[0][3],'\t',DP_li[0],'_',TA,' (',pmid,')',sep]
-        str_add=[rec.get("TI"),sep,sep,AU[0],sep,sep,
+            str_list = ['[',jcr_row[0][3],']','\t',DP_li[0],'_',TA,' (',pmid,')',sep]
+        str_add=['## ',rec.get("TI"),sep,sep,AU[0],sep,sep,
                         '  ',AB,sep,sep,
                         DP_li[0],'_',AU_li[0],'_',TA,'_',pmid,sep,
                         SO,sep,
@@ -151,7 +149,7 @@ def getabs(ids,db_list,debug=False):
 def getref(form,term,retmax=20):
     ids = getids(term,retmax)
     if len(ids)==0:
-        print('Nothing to search. Please retry with other term.')
+        print('Nothing to search. Please retry with other term.\n')
         return()
     Entrez.email="kisudsoe@gmail.com" # always tell NCBI who I am
     handle = Entrez.efetch(db="pubmed", id=ids,
@@ -160,7 +158,7 @@ def getref(form,term,retmax=20):
     record = Medline.parse(handle) # records is an iterator
     records = list(record) # to save the record
     handle.close()
-    print("Search result has %d reference(s).\n"%len(records))
+    print("Search result has %d reference(s).\n"%len(records), end='')
 
     out = []
     for rec in tqdm(records):
@@ -233,7 +231,7 @@ def filt_if(abstract,ifac=10):
     out = []
     i = 0
     for item in abstract:
-        im_fac = item.split('\t')[0]
+        im_fac = item.split(']\t')[0].split('[')[1]
         if im_fac=='---': im_fac = 0
         elif im_fac=='-': im_fac = 0 # bugfix 160223
         elif im_fac=='Not Available': im_fac = 0 # bugfix 160806
@@ -245,7 +243,7 @@ def filt_if(abstract,ifac=10):
     print('IF filtered item length= %d' %len(out))
     return(out)
 
-def filt_yr(abstract,year=2011):
+def filt_yr(abstract,year=2015):
     yr_li = []
     out = []
     i = 0
@@ -300,22 +298,27 @@ def refui(ref):
 # Initiate functions
 db_jcr = getjcr('home') # work/home/tab
 
-'''
-ATOM short-cuts:
-  1. Switching syntax: `ctrl-shift-L`
-  2. Command: `ctrl-shift-P`
-'''
+
+## ATOM short-cuts: #################
+#  1. Switching syntax: `ctrl-shift-L` > markdown
+#  2. Command: `ctrl-shift-P`
+#####################################
 # %% Search papers using terms
+<<<<<<< HEAD
 a = 'ape3 yeast'
+=======
+a = 'phenologs'
+>>>>>>> origin/master
 abst = pubsch(a,db_jcr,1000)
+print('\n'+'*'*25+'\n')
+print('\n*************************\n\n'.join(abst[0:50]))
 abst_if15 = filt_if(abst,15)
-abst_yr14 = filt_yr(abst,2014)
+abst_yr14 = filt_yr(abst,2015)
 abst_yr14_if15 = filt_if(abst_yr14,15)
-print('\n***********************\n\n'.join(abst[0:20]))
 
 
 # %% Get abstract using PMID
-a2 = "25909289"
+a2 = "21529326"
 ref = getabs(a2,db_jcr)
 #refui(ref)
 print(ref[0])
@@ -323,6 +326,6 @@ openurl(a2)
 
 
 # %% Reference information
-ref = getref("long","27974677") # (long/short/doku, term/pmid)
+ref = getref("long","17092546") # (long/short/doku, term/pmid)
 #refui(ref)
 print(ref[0])

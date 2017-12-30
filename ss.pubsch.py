@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-2016-05-22 SUN v1.1
+2017-05-17 WED v1.1a
 @author: KimSS
 
 v1.0  - 160131, first script
@@ -296,7 +296,7 @@ def refui(ref):
 '''
 
 # Initiate functions
-db_jcr = getjcr('work') # work/home/tab
+db_jcr = getjcr('home') # work/home/tab
 
 
 ## ATOM short-cuts: #################
@@ -305,7 +305,15 @@ db_jcr = getjcr('work') # work/home/tab
 #  3. <span style="color: yellow">Aging</span>
 #####################################
 # %% Search papers using terms
+<<<<<<< HEAD
 a = 'review machine learning methods'
+=======
+<<<<<<< HEAD
+a = 'ape3 yeast'
+=======
+a = 'phenologs'
+>>>>>>> origin/master
+>>>>>>> b64dd4035b404d69f9c4ff1fbacf4c567ff0df9a
 abst = pubsch(a,db_jcr,1000)
 #print('\n'+'*'*25+'\n')
 #print('\n*************************\n\n'.join(abst[0:50]))

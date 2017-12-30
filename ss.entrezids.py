@@ -8,11 +8,15 @@ from Bio import Entrez # just one-time
 def getid(item,taxon,debug=False):
     Entrez.email="kisudsoe@gmail.com"
     sepbar = '-'*30
+<<<<<<< HEAD
+    animal = 'Mus musculus'
+=======
     if taxon=='M': animal = 'Mus musculus'
     elif taxon=='Y': animal = 'Saccharomyces cerevisiae'
     elif taxon=='H': animal = 'Homo sapiens'
     else:
         print('Please input taxon \n\tM, mouse\n\tY, yeast\n\tH, human')
+>>>>>>> 4c53cc8f2b3155edc238f1d794ee69c972d01c6b
 
     if(item=='---'):
         if(debug==True): print('No gene name here to search.')
@@ -123,6 +127,11 @@ def getSeq(item_id,taxon,debug=False):
             strand = 2
         else:
             strand = 1
+<<<<<<< HEAD
+        ginfo_ann_id = 'NC'+ginfo_ann[2].split("NC")[1]
+        ginfo_ann_seqst = int(ginfo_ann[3].split("..")[0].split("(")[1])
+        ginfo_ann_seqsp = int(ginfo_ann[3].split("..")[1].split(",")[0].split(")")[0])
+=======
         #print("\n note:\n"+ginfo_ann[4]+"\n")
         if taxon=='H': # debug 161005
             ginfo_ann_id = 'NC'+ginfo_ann[3].split("NC")[1]
@@ -132,6 +141,7 @@ def getSeq(item_id,taxon,debug=False):
             ginfo_ann_id = 'NC'+ginfo_ann[2].split("NC")[1]
             ginfo_ann_seqst = int(ginfo_ann[3].split("..")[0].split("(")[1])
             ginfo_ann_seqsp = int(ginfo_ann[3].split("..")[1].split(",")[0].split(")")[0])
+>>>>>>> 4c53cc8f2b3155edc238f1d794ee69c972d01c6b
 
         if(debug==True):
             print('Parsing result'+sepbar+'\nseq_id= %s' % ginfo_ann_id)
@@ -209,5 +219,9 @@ genes = listIn()
 # %% Execute function
 genes_id = getidList(genes,"M") # using 160704 ver
 
+<<<<<<< HEAD
+genes_id = getidList(genes) # using 160627 ver
+=======
 # %% Save as csv file
 savecsv(genes_id,name='/170417_genes_ids.csv')
+>>>>>>> 4c53cc8f2b3155edc238f1d794ee69c972d01c6b

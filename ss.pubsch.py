@@ -302,15 +302,20 @@ db_jcr = getjcr('work') # work/home/tab
 ## ATOM short-cuts: #################
 #  1. Switching syntax: `ctrl-shift-L` > markdown
 #  2. Command: `ctrl-shift-P`
+#  3. <span style="color: yellow">Aging</span>
 #####################################
 # %% Search papers using terms
-a = 'phenologs'
+a = 'review machine learning methods'
 abst = pubsch(a,db_jcr,1000)
+#print('\n'+'*'*25+'\n')
+#print('\n*************************\n\n'.join(abst[0:50]))
+abst_if10 = filt_if(abst,10)
+#print('\n*************************\n\n'.join(abst_if10[0:50]))
+abst_yr14 = filt_yr(abst,2014)
+#print('\n*************************\n\n'.join(abst_yr16[0:50]))
+abst_yr14_if10 = filt_if(abst_yr14,10)
 print('\n'+'*'*25+'\n')
-print('\n*************************\n\n'.join(abst[0:50]))
-abst_if15 = filt_if(abst,15)
-abst_yr14 = filt_yr(abst,2015)
-abst_yr14_if15 = filt_if(abst_yr14,15)
+print('\n*************************\n\n'.join(abst_yr14_if10[0:50]))
 
 
 # %% Get abstract using PMID

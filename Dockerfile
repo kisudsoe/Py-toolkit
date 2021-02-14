@@ -3,8 +3,8 @@ WORKDIR /
 
 MAINTAINER Seungsoo_Kim
 
-RUN sudo apt update -y && \
-    sudo apt upgrade -y
+RUN apt update -y && \
+    apt upgrade -y
 
 # Install dependencies
 RUN apt install -y \

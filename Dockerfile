@@ -11,5 +11,5 @@ RUN apt install -y \
     wget \
     bedtools \
     vim \
-    python \
-    python-pip
+    python
+#python-pip
